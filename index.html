@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <title>Are You Being Served Randomizer</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="30-rock-splash.png">
+    <link rel="apple-touch-startup-image" href="30-rock-splash.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+
+  </head>
+  <body>
+    <h1>Are You Being Served Randomizer</h1>
+    <fieldset>
+      <input type = "radio"
+             name = "source"
+             id = "hulu"
+             value = "hulu"
+             onchange = "setSource('hulu')" />
+      <label for = "hulu">Hulu</label>
+      <input type = "radio"
+             name = "source"
+             id = "prime"
+             value = "prime"
+              onchange = "setSource('prime')" />
+      <label for = "prime">Amazon Prime Video</label>
+    </fieldset>
+    <br><br>
+    
+    You can "install" this page as an app in Chrome, Edge, Firefox or on Android to enable automatic redirection to a random episode.
+    
+    <script>         
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream){
+        selector = document.querySelector("fieldset");
+        selector.setAttribute("style","display:none");
+        document.querySelector("#prime").setAttribute("checked","checked");
+        source = setSource("hulu");
+      }
+      
+      if (window.location.search == "?app=true"){
+        console.log("in app");
+        if (localStorage.getItem("source") !== null){
+          source = localStorage.getItem("source");
+          console.log(source);
+          fetchEpisodes(source);
+        }
+      }
+    
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+      
+      function setSource(source) {
+        localStorage.setItem("source",source);
+        console.log("setting: "+source);
+        return source;
+      }
+      
+      function fetchEpisodes(source){
+        fetch(source+'.json')
+        .then(response => response.json())
+        .then(episodes => pickEpisode(episodes, source));
+      }
+      
+      function pickEpisode(episodes, source){        
+        switch(source) {
+          case "hulu":
+            prefix = "https://www.hulu.com/watch/";
+            break;
+          case "prime":
+            prefix = "https://watch.amazon.com/watch?asin=";
+            break;
+        }
+        
+        item = episodes[Math.floor(Math.random()*episodes.length)];
+        redirectUrl = prefix+item;
+        window.location.href=redirectUrl;
+      }
+    </script>
+  </body>
+</html>
