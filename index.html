@@ -11,37 +11,16 @@
   </head>
   <body>
     <h1>Are You Being Served Randomizer</h1>
-    <fieldset>
-      <input type = "radio"
-             name = "source"
-             id = "hulu"
-             value = "hulu"
-             onchange = "setSource('hulu')" />
-      <label for = "hulu">Hulu</label>
-      <input type = "radio"
-             name = "source"
-             id = "prime"
-             value = "prime"
-              onchange = "setSource('prime')" />
-      <label for = "prime">Amazon Prime Video</label>
-    </fieldset>
-    <br><br>
     
     You can "install" this page as an app in Chrome, Edge, Firefox or on Android to enable automatic redirection to a random episode.
     
-    <script>         
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream){
-        selector = document.querySelector("fieldset");
-        selector.setAttribute("style","display:none");
-        document.querySelector("#prime").setAttribute("checked","checked");
-        source = setSource("hulu");
-      }
+    <script>  
+      setSource("hulu");
       
       if (window.location.search == "?app=true"){
         console.log("in app");
         if (localStorage.getItem("source") !== null){
           source = localStorage.getItem("source");
-          console.log(source);
           fetchEpisodes(source);
         }
       }
